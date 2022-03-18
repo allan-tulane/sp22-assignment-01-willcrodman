@@ -40,26 +40,37 @@ class Result:
         return('longest_size=%d left_size=%d right_size=%d is_entire_range=%s' %
               (self.longest_size, self.left_size, self.right_size, self.is_entire_range))
 
-
 def in_parallel(f, a, b, key):
   #theoreticaly thread handler would be implemented here
   thread_a, thread_b = f(a, key), f(b, key)
   return thread_a, thread_b
     
 def longest_run_recursive(mylist, key):
-  
-  if len(mylist) == 1:
-    if key in mylist:
-      return 1
+  def merge(r1, r2):
+
+    if r1.is_entire_range == False and r2.is_entire_range == False:    
+      l = r1.left_size
+      r = r2.right_size
+      if r1.is_entire_range: l += r2.left_size
+      if r2.is_entire_range: r += r1.right_size
+      return Result(l, r, max((r1.right_size + r2.left_size), r1.longest_size, r2.longest_size), False) 
     else:
-      return 0
+      t = r1.longest_size + r1.longest_size
+      return Result(t, t, t, True)
+      
+  if len(mylist) == 1:
+      if mylist[0] == key:            
+          return Result(1, 1, 1, True)
+      else:
+          return Result(0, 0, 0, False)
 
-  right, left = in_parallel(longest_run_recursive, mylist[:len(mylist)//2], mylist[len(mylist)//2:], key)
-
-  print(Result(right, left, max(right, left), "False"))
-
-  return right + left
+  r1 = longest_run_recursive(mylist[:len(mylist)//2], key)
+  r2 = longest_run_recursive(mylist[len(mylist)//2:], key)
+  return merge(r1, r2)
 
 ## Feel free to add your own tests here.
 def test_longest_run():
-    assert longest_run([2,12,12,8,12,12,12,0,12,1], 12) == 3
+    assert longest_run([2,12,12,8,12,12,12,0,12,1], 12).longest_size == 3
+
+
+print(longest_run_recursive([12,2,12,3,12], 2).longest_size)
