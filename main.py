@@ -40,11 +40,6 @@ class Result:
         return('longest_size=%d left_size=%d right_size=%d is_entire_range=%s' %
               (self.longest_size, self.left_size, self.right_size, self.is_entire_range))
 
-def in_parallel(f, a, b, key):
-  #theoreticaly thread handler would be implemented here
-  thread_a, thread_b = f(a, key), f(b, key)
-  return thread_a, thread_b
-    
 def longest_run_recursive(mylist, key):
   def merge(r1, r2):
 
@@ -71,6 +66,3 @@ def longest_run_recursive(mylist, key):
 ## Feel free to add your own tests here.
 def test_longest_run():
     assert longest_run([2,12,12,8,12,12,12,0,12,1], 12).longest_size == 3
-
-
-print(longest_run_recursive([12,2,12,3,12], 2).longest_size)
